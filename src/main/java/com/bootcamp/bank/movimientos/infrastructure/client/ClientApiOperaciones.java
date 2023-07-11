@@ -24,7 +24,7 @@ public class ClientApiOperaciones {
      */
     public Flux<OperacionCta> getOperaciones(String idCliente) {
         return webClient.get()
-                .uri("/operaciones/cuentas/" + idCliente)
+                .uri("/operaciones/cuentas/cliente/" + idCliente)
                 .retrieve()
                 .bodyToFlux(OperacionCta.class);
     }
