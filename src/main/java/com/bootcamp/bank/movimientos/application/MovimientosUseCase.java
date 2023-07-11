@@ -1,8 +1,10 @@
 package com.bootcamp.bank.movimientos.application;
 
+import com.bootcamp.bank.movimientos.infrastructure.client.ClientApiClientes;
 import com.bootcamp.bank.movimientos.infrastructure.client.ClientApiConsumos;
 import com.bootcamp.bank.movimientos.infrastructure.client.ClientApiOperaciones;
 import com.bootcamp.bank.movimientos.infrastructure.client.ClientApiPagos;
+import com.bootcamp.bank.movimientos.infrastructure.exception.BusinessException;
 import com.bootcamp.bank.movimientos.infrastructure.rest.dto.Movimiento;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +22,15 @@ public class MovimientosUseCase {
 
     private final ClientApiOperaciones clientApiOperaciones;
 
+    private final ClientApiClientes clientApiClientes;
+
     public Mono<Movimiento> getMovimientos(String id){
 
-        return clientApiPagos.getPagos(id)
+        return clientApiClientes.getClientes(id)
+                .switchIfEmpty(Mono.error(()->new BusinessException("No existe cliente con el id "+id))).
+                flatMapMany(c-> {
+                    return clientApiPagos.getPagos(id);
+                })
                 .collectList()
                 .map(l-> {
                     Movimiento mov=new Movimiento();

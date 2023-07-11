@@ -24,4 +24,9 @@ public class WebClientConfig {
     public WebClient webClientPagos() {
         return WebClient.create("http://localhost:8086");
     }
+
+    @Bean(name = "clientClientes")
+    public WebClient webClientClientes() {
+        return WebClient.create("http://localhost:8081");
+    }
 }
